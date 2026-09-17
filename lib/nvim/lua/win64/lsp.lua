@@ -85,9 +85,26 @@ local omnisharp_config = {
   },
 }
 
+local function quiet_rpc(command)
+  return function(dispatchers, config)
+    local on_error = dispatchers.on_error
+    dispatchers.on_error = function(code, err)
+      if code == vim.lsp.rpc.client_errors.INVALID_SERVER_MESSAGE and err == vim.NIL then
+        return
+      end
+      on_error(code, err)
+    end
+    return vim.lsp.rpc.start(command, dispatchers, {
+      cwd = config.cmd_cwd,
+      env = config.cmd_env,
+      detached = config.detached,
+    })
+  end
+end
+
 local omnisharp_cmd = paths.omnisharp_command()
 if omnisharp_cmd then
-  omnisharp_config.cmd = omnisharp_cmd
+  omnisharp_config.cmd = quiet_rpc(omnisharp_cmd)
 end
 
 vim.lsp.config('omnisharp', omnisharp_config)
