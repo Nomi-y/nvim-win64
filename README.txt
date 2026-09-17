@@ -10,9 +10,16 @@ The PC needs the .NET SDK. OmniSharp and CSharpier need it.
 GET THE FOLDER
 --------------
 
-Extract the zip file, or clone the repository:
+Download the zip file:
+
+   https://github.com/Nomi-y/nvim-win64/archive/refs/tags/v1.0.0.zip
+
+Or clone the repository:
 
    git clone https://github.com/Nomi-y/nvim-win64.git
+
+The zip file gives the folder nvim-win64-1.0.0. The name does not matter.
+This README uses the name nvim-win64.
 
 The folder holds bin, lib, share and tools. Keep the four together.
 Neovim reads the config, the plugins and the tools through this structure.
