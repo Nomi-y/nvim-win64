@@ -7,82 +7,53 @@ already installed. Nothing downloads. No install program runs.
 The PC needs the .NET SDK. OmniSharp and CSharpier need it.
 
 
-1. GET THE FOLDER
------------------
+GET THE FOLDER
+--------------
 
-From the zip file:
-   Right-click the zip file. Select "Extract All".
+Extract the zip file, or clone the repository:
 
-From git:
    git clone https://github.com/Nomi-y/nvim-win64.git
 
-Both give one folder:
-
-   nvim-win64\bin\nvim.exe
-   nvim-win64\lib\
-   nvim-win64\share\
-   nvim-win64\tools\
-
-Keep the four folders together. Neovim reads the config, the plugins and
-the tools through this structure.
+The folder holds bin, lib, share and tools. Keep the four together.
+Neovim reads the config, the plugins and the tools through this structure.
 
 
-2. ADD bin TO THE PATH
-----------------------
+ADD bin TO THE PATH
+-------------------
 
-METHOD A - THE SUPPLIED FILE
+Use one of these three methods. Then open a new terminal window.
 
-1. Double-click add-to-path.bat in the nvim-win64 folder.
-2. Close every terminal window. Open a new one.
+A. Double-click add-to-path.bat.
+   SmartScreen can block the file. Click "More info", then "Run anyway".
 
-SmartScreen can show "Windows protected your PC".
-Click "More info". Then click "Run anyway".
-
-METHOD B - ONE LINE IN POWERSHELL
-
-1. Hold Shift. Right-click on free space in the nvim-win64 folder.
-2. Select "Open PowerShell window here".
-3. Paste this line. Press Enter.
+B. Open PowerShell in the nvim-win64 folder. Run this line:
 
 $bin = (Resolve-Path .\bin).Path; $user = [Environment]::GetEnvironmentVariable('Path','User'); if (-not $user) { $user = '' }; if (($user -split ';') -notcontains $bin) { [Environment]::SetEnvironmentVariable('Path', ($user.TrimEnd(';') + ';' + $bin), 'User') }; Write-Host ('PATH now has ' + $bin)
 
-4. Close the window. Open a new terminal window.
+C. Open "Edit environment variables for your account".
+   Add the full path of the bin folder to Path, under User variables.
 
-METHOD C - THE WINDOWS DIALOG
-
-1. Press the Windows key. Type: environment
-2. Open "Edit environment variables for your account".
-3. Select the row "Path" under "User variables". Click "Edit".
-4. Click "New". Type the full path of the bin folder.
-5. Click "OK" in every open window.
-6. Close every terminal window. Open a new one.
-
-WITHOUT A PATH CHANGE
-
-Copy the nvim-win64 folder into the project folder. Then run:
-
-   .\nvim-win64\bin\nvim.exe .
+To skip the PATH, copy the nvim-win64 folder into the project folder.
+Then run .\nvim-win64\bin\nvim.exe .
 
 
-3. CHECK
---------
+CHECK
+-----
 
-   nvim --version       shows NVIM v0.12.5
-   nvim                 then type :SetupCheck and press Enter
-
-:SetupCheck lists dotnet, OmniSharp, CSharpier and the plugin count.
+Run nvim --version. The first line shows NVIM v0.12.5.
+Start nvim and run :SetupCheck.
+The report lists dotnet, OmniSharp, CSharpier and the plugin count.
 A line with NOT FOUND shows a problem.
 
 
 OPEN A PROJECT
 --------------
 
-1. Hold Shift. Right-click on free space in the project folder.
-2. Select "Open PowerShell window here".
-3. Type: nvim .
+Run nvim . in the project folder.
 
-OmniSharp starts at the first .cs file. It needs a .csproj, .sln or
-.slnx file above that file. The first start takes 10 to 30 seconds.
+OmniSharp starts at the first .cs file.
+It needs a .csproj, .sln or .slnx file above that file.
+The first start takes 10 to 30 seconds.
 
 
 KEYS
@@ -142,24 +113,24 @@ Type the short word. Press Ctrl-Space. Select the snippet.
    tt    an xUnit test method
    try   a try-catch block
 
-CSharpier formats every C# file at each write.
-
 
 INSTALLED
 ---------
 
    Neovim 0.12.5 for Windows 64-bit
-   OmniSharp 1.40.0          tools\omnisharp, tools\omnisharp-framework
-   CSharpier 1.2.6           tools\csharpier
-   ripgrep 15.2.0, fd 10.5.0 bin
-   19 plugins                lib\nvim\pack\bundle\start
-   the config                lib\nvim\plugin, lib\nvim\lua\win64
+   OmniSharp 1.40.0            tools\omnisharp, tools\omnisharp-framework
+   CSharpier 1.2.6             tools\csharpier
+   ripgrep 15.2.0, fd 10.5.0   bin
+   19 plugins                  lib\nvim\pack\bundle\start
+   the config                  lib\nvim\plugin, lib\nvim\lua\win64
 
-Two OmniSharp builds ship here. The config picks one at start.
+This folder holds two OmniSharp builds. The config picks one at start.
 It takes tools\omnisharp when the PC has the .NET 10 runtime.
-It takes tools\omnisharp-framework in every other case, because that
-build runs on the .NET Framework of Windows itself.
+It takes tools\omnisharp-framework in every other case.
+That build runs on the .NET Framework of Windows.
 :SetupCheck names the build in use.
+
+CSharpier formats every C# file at each write.
 
 
 TROUBLESHOOTING
@@ -173,8 +144,8 @@ If the problem stays, run add-to-path.bat again. Read the message.
 Install the .NET SDK. OmniSharp and CSharpier need it.
 
 NO DIAGNOSTICS AND NO COMPLETION
-OmniSharp needs a project file. Run: dotnet new sln
-Then type :checkhealth vim.lsp and read the section "vim.lsp".
+OmniSharp needs a project file. Run dotnet new sln.
+Then run :checkhealth vim.lsp and read the section "vim.lsp".
 
 THE ICONS SHOW AS BOXES
 The terminal font has no icons.
@@ -188,6 +159,6 @@ An older config is at %LOCALAPPDATA%\nvim. Rename that folder.
 REMOVE
 ------
 
-1. Delete the nvim-win64 folder.
-2. Remove the bin path from the user PATH with method C.
-3. Delete %LOCALAPPDATA%\nvim-data. It holds the undo files.
+Delete the nvim-win64 folder.
+Remove the bin path from the user PATH with method C.
+Delete %LOCALAPPDATA%\nvim-data. It holds the undo files.
