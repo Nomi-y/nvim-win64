@@ -60,9 +60,44 @@ Neovim finds the config, the plugins and the tools through this structure.
 STEP 2 - ADD THE BIN FOLDER TO THE PATH
 ---------------------------------------
 
-Use method A. Use method B only if method A fails.
+Use method A. Method A needs no typing.
 
-METHOD A - THE WINDOWS DIALOG
+METHOD A - RUN THE SUPPLIED FILE
+
+1. Open the nvim-win64 folder in Explorer.
+2. Double-click the file add-to-path.bat.
+3. Read the message. The message shows the folder that it added.
+4. Press a key to close the window.
+5. Close every terminal window.
+6. Open a new terminal window.
+
+The file adds its own bin folder to the user PATH.
+The file changes the user PATH only. The file leaves the system PATH alone.
+The file does not need admin rights.
+
+Windows can show a blue box with the text "Windows protected your PC".
+Click "More info". Then click "Run anyway".
+
+METHOD B - PASTE ONE LINE INTO POWERSHELL
+
+1. Open the nvim-win64 folder in Explorer.
+2. Hold Shift. Right-click on free space in the window.
+3. Select "Open PowerShell window here".
+4. Copy the line below. Right-click in the window to paste it.
+
+$bin = (Resolve-Path .\bin).Path; $user = [Environment]::GetEnvironmentVariable('Path','User'); if (-not $user) { $user = '' }; if (($user -split ';') -notcontains $bin) { [Environment]::SetEnvironmentVariable('Path', ($user.TrimEnd(';') + ';' + $bin), 'User') }; Write-Host ('PATH now has ' + $bin)
+
+5. Press Enter.
+6. Close the window.
+7. Open a new terminal window.
+
+The line reads the folder from the current directory. You type no path.
+The line is a command. The line is not a script file.
+An execution policy does not block a pasted command.
+
+METHOD C - THE WINDOWS DIALOG
+
+Use this method if PowerShell is blocked.
 
 1. Press the Windows key.
 2. Type: environment
@@ -75,38 +110,22 @@ METHOD A - THE WINDOWS DIALOG
 9. Close every terminal window.
 10. Open a new terminal window.
 
-Method A changes the user PATH only. Method A does not need admin rights.
 
-METHOD B - ONE POWERSHELL COMMAND
+IF YOU CANNOT CHANGE THE PATH
+-----------------------------
 
-1. Open PowerShell.
-2. Type this command on one line. Use your own path.
+Neovim also runs from the project folder. The PATH stays untouched.
 
-   [Environment]::SetEnvironmentVariable('Path',[Environment]::GetEnvironmentVariable('Path','User')+';C:\Users\<user>\Tools\nvim-win64\bin','User')
+1. Copy the whole nvim-win64 folder into the project folder.
+2. Open the project folder in Explorer.
+3. Hold Shift. Right-click on free space in the window.
+4. Select "Open PowerShell window here".
+5. Type: .\nvim-win64\bin\nvim.exe .
+6. Press Enter.
 
-3. Press Enter.
-4. Close the window.
-5. Open a new PowerShell window.
-
-Method B is a command. Method B is not a script file.
-An execution policy does not block a typed command.
-The command adds to the user PATH only. The command leaves the system PATH alone.
-
-METHOD C - NO PATH CHANGE
-
-Windows already has this folder on the PATH of every user:
-
-   %LOCALAPPDATA%\Microsoft\WindowsApps
-
-1. Open Explorer.
-2. Type %LOCALAPPDATA%\Microsoft in the address bar. Press Enter.
-3. Copy the folders lib, share and tools from nvim-win64 into this folder.
-4. Open the WindowsApps folder.
-5. Copy every file from nvim-win64\bin into this folder.
-6. Open a new terminal window.
-
-Neovim finds its runtime one level above the folder of nvim.exe.
-Method C keeps that relation. Method C needs no PATH change.
+Neovim finds its runtime from the path of nvim.exe.
+It finds the config, the plugins and the tools next to that path.
+Keep the folders bin, lib, share and tools together.
 
 
 STEP 3 - TEST THE INSTALL
@@ -246,6 +265,9 @@ Plugins, in the folder nvim-win64\lib\nvim\pack\bundle\start
    vim-visual-multi         multiple cursors
    which-key.nvim           key list
 
+Helper, in the folder nvim-win64
+   add-to-path.bat          adds the bin folder to the user PATH
+
 Config, in the folder nvim-win64\lib\nvim
    plugin\win64.lua         the start file
    lua\win64\options.lua    editor options
@@ -265,7 +287,9 @@ TROUBLESHOOTING
 "nvim" IS NOT FOUND
 The PATH change did not reach the terminal.
 Close every terminal window. Open a new one.
-If the problem stays, repeat step 2. Use method C.
+If the problem stays, run add-to-path.bat again. Read the message.
+If the message shows an error, use method B or method C of step 2.
+Read also "IF YOU CANNOT CHANGE THE PATH".
 
 :SetupCheck SHOWS "dotnet NOT FOUND"
 The .NET SDK is missing, or the SDK is not on the PATH.
@@ -321,5 +345,5 @@ HOW TO REMOVE
 -------------
 
 1. Delete the nvim-win64 folder.
-2. Remove the bin path from the user PATH. Use method A of step 2.
+2. Remove the bin path from the user PATH. Use method C of step 2.
 3. Delete the folder %LOCALAPPDATA%\nvim-data. It holds the undo files only.
