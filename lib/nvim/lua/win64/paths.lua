@@ -29,13 +29,39 @@ M.dotnet = M.first_executable({ 'dotnet' })
 M.omnisharp_dll = M.first_file({ M.tools .. '/omnisharp/OmniSharp.dll' })
 
 M.omnisharp_exe = M.first_executable({
-  M.tools .. '/omnisharp/OmniSharp.exe',
-  M.tools .. '/omnisharp/OmniSharp',
+  M.tools .. '/omnisharp-framework/OmniSharp.exe',
   'OmniSharp',
   'omnisharp',
 })
 
 M.csharpier = M.first_file({ M.tools .. '/csharpier/CSharpier.dll' })
+
+local function dotnet_runs_net10()
+  if not M.dotnet then
+    return false
+  end
+  local exe = vim.fn.exepath(M.dotnet)
+  if exe == '' then
+    return false
+  end
+  local root = vim.fs.normalize(vim.fn.fnamemodify(exe, ':h'))
+  return vim.fn.glob(root .. '/shared/Microsoft.NETCore.App/10.*') ~= ''
+end
+
+local function pick_omnisharp()
+  if M.omnisharp_dll and dotnet_runs_net10() then
+    return { M.dotnet, M.omnisharp_dll }, 'net10'
+  end
+  if M.omnisharp_exe then
+    return { M.omnisharp_exe }, 'framework'
+  end
+  if M.omnisharp_dll and M.dotnet then
+    return { M.dotnet, M.omnisharp_dll }, 'net10'
+  end
+  return nil, 'none'
+end
+
+M.omnisharp_base, M.omnisharp_kind = pick_omnisharp()
 
 function M.omnisharp_command()
   local args = {
@@ -48,14 +74,10 @@ function M.omnisharp_command()
     '--languageserver',
   }
 
-  local command = nil
-  if M.dotnet and M.omnisharp_dll then
-    command = { M.dotnet, M.omnisharp_dll }
-  elseif M.omnisharp_exe then
-    command = { M.omnisharp_exe }
-  else
+  if not M.omnisharp_base then
     return nil
   end
+  local command = vim.deepcopy(M.omnisharp_base)
 
   for _, arg in ipairs(args) do
     table.insert(command, arg)

@@ -24,7 +24,12 @@ local function report()
   local omnisharp_cmd = paths.omnisharp_command()
 
   table.insert(lines, 'dotnet        ' .. (dotnet_version or 'NOT FOUND'))
-  table.insert(lines, 'omnisharp     ' .. (omnisharp_cmd and table.concat(omnisharp_cmd, ' ', 1, 2) or 'NOT FOUND'))
+  local omnisharp_shown = 'NOT FOUND'
+  if omnisharp_cmd then
+    local head = #omnisharp_cmd > 1 and table.concat(omnisharp_cmd, ' ', 1, 2) or omnisharp_cmd[1]
+    omnisharp_shown = head .. '  [' .. paths.omnisharp_kind .. ']'
+  end
+  table.insert(lines, 'omnisharp     ' .. omnisharp_shown)
   table.insert(lines, 'csharpier     ' .. (paths.csharpier or 'NOT FOUND'))
   table.insert(lines, 'ripgrep       ' .. (vim.fn.exepath('rg') ~= '' and vim.fn.exepath('rg') or 'NOT FOUND'))
   table.insert(lines, 'fd            ' .. (vim.fn.exepath('fd') ~= '' and vim.fn.exepath('fd') or 'NOT FOUND'))
